@@ -76,7 +76,7 @@ func loadSkill(name string) {
 
 	content, _ := os.ReadFile(path)
 	activeSkills = append(activeSkills, string(content))
-	fmt.Printf("Successfully learned: %s\n", name)
+	fmt.Printf("5, 4, 3, 2, 1 - I know: %s!\n", name)
 }
 
 const (
