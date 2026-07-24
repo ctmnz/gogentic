@@ -68,9 +68,8 @@ type FunctionCall struct {
 // Main function
 
 func main() {
-
-	ollamaEndpoint := "http://localhost:11434/api/chat"
-	modelName := "gemma4:12b"
+	ollamaEndpoint := "http://192.168.86.247:11434/api/chat"
+	modelName := "gemma4:12b-mlx"
 
 	messages := []Message{
 		{
@@ -144,5 +143,4 @@ func main() {
 		}
 
 	}
-
 }

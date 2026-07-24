@@ -1,0 +1,37 @@
+deploymentMode: Monolithic
+
+loki:
+  auth_enabled: false
+  storage:
+    type: filesystem
+  
+  # Force all internal components to use an in-memory ring instead of memberlist
+  commonConfig:
+    replication_factor: 1
+  ingester:
+    lifecycler:
+      ring:
+        kvstore:
+          store: inmemory
+        replication_factor: 1
+  distributor:
+    ring:
+      kvstore:
+        store: inmemory
+  querier:
+    max_concurrent: 4
+  useTestSchema: true
+
+# Keep the scalable targets zeroed out
+singleBinary:
+  replicas: 1
+read:
+  replicas: 0
+write:
+  replicas: 0
+backend:
+  replicas: 0
+
+# Re-enable the canary to satisfy the validation hook
+lokiCanary:
+  enabled: true

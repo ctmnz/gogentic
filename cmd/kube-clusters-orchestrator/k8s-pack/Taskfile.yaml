@@ -1,0 +1,31 @@
+version: '3'
+env:
+  TaskInfo: "Create"
+
+tasks:
+  destroy:
+    cmds:
+      - kind delete cluster --name simple-cluster
+  lab:
+    cmds:
+      - echo "Installing kube prometheus stack"
+      - helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+      - helm install kps oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack
+      - echo "Priting the admin password:"
+      - kubectl --namespace default get secrets kps-grafana -o jsonpath="{.data.admin-password}" | base64 -d ; echo
+  docker:
+    cmds:
+      - docker run -p 3000:3000 -p 4317:4317 -p 4318:4318 --rm -ti grafana/otel-lgtm
+  test:
+    cmds:
+      - echo "tests commmands"
+  build:*:
+    vars:
+      KUBENAME: '{{index .MATCH 0}}'
+    cmds:
+      - kind create cluster --name={{.KUBENAME}} --config simple-cluster.yaml
+  destroy:*:
+    vars:
+      KUBENAME: '{{index .MATCH 0}}'
+    cmds:
+      - kind delete cluster --name={{.KUBENAME}}
