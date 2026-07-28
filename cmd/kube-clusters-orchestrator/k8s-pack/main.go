@@ -27,8 +27,6 @@ func destroyCluster(name string) {
 	}
 }
 
-
-
 func main() {
 	//	createCluster("poc-cluster")
 	//	createCluster("dev-cluster")
@@ -37,21 +35,32 @@ func main() {
 	//	destroyCluster("dev-cluster")
 	//	destroyCluster("prod-cluster")
 
-
-	http.HandleFunc("/build", func(w http.ResponseWriter, r *http.Request){
-		fmt.Fprintf(w, "building")
+	http.HandleFunc("/build", func(w http.ResponseWriter, r *http.Request) {
+		name := r.URL.Query().Get("name")
+		fmt.Fprintf(w, "building %s", name)
+		if len(name) > 0 {
+			go createCluster(name)
+			return
+		}
+		fmt.Fprintf(w, "No name")
 	})
 
+	http.HandleFunc("/destroy", func(w http.ResponseWriter, r *http.Request) {
+		name := r.URL.Query().Get("name")
+		fmt.Fprintf(w, "destroying %s", name)
+		if len(name) > 0 {
+			go destroyCluster(name)
+			return
+		}
+		fmt.Fprintf(w, "No name")
+	})
 
 	s := http.Server{
-		Addr: ":8090",
+		Addr:           ":8090",
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,
 		MaxHeaderBytes: 1 << 20,
 	}
 
 	s.ListenAndServe()
-
-
-
 }
